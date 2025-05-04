@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import { Manager } from "../../Models/Manager.js";
 import { ManagerApproval } from "../../Models/ManagerApproval.js";
+import { HashPassword } from "../../Utility/HashPassword.js";
 
 dotenv.config()
 
@@ -18,8 +19,7 @@ export const SignUpManager = async (req, res) => {
             return res.status(400).json({ message: 'Invalid token! Request new token.' })
         }
 
-        const salt = await bcrypt.genSalt(parseInt(process.env.SALT_VAL))
-        const hashedPassword = await bcrypt.hash(password, salt)
+        const hashedPassword = await HashPassword(password)
         const newManager = await Manager.create({
             username: username,
             email: email,

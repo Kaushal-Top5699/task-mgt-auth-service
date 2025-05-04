@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { Manager } from "../../Models/Manager.js";
+import { GenerateToken } from "../../Utility/GenerateToken.js";
 
 dotenv.config()
 
@@ -18,11 +19,7 @@ export const SignInManager = async (req, res) => {
         }
 
         // Creating JWT token.
-        const token = jwt.sign(
-            {manager_id: manager.id, manager_email: manager.email}, // Payload
-            process.env.JWT_SECRET, // Secret Key from .env file
-            { expiresIn: "5h" } // Token expires in 1h.
-        )
+        const token = GenerateToken(manager.id, manager.email)
 
         await Manager.update(
             { lastLogin: new Date() },

@@ -2,6 +2,7 @@ import { RootUser } from "../../Models/RootUser.js";
 import bcrypt from "bcryptjs";
 import { Op } from 'sequelize';
 import dotenv from "dotenv";
+import { HashPassword } from "../../Utility/HashPassword.js";
 
 dotenv.config();
 
@@ -17,8 +18,8 @@ export const SignUp = async (req, res) => {
         if (rootExists) {
             return res.status(409).json({ message: `Root(Master) user already exists with username - ${username} and email - ${email}` })
         }
-        const salt = await bcrypt.genSalt(parseInt(process.env.SALT_VAL))
-        const hashedPassword = await bcrypt.hash(password, salt)
+
+        const hashedPassword = await HashPassword(password)
         const createNewRoot = await RootUser.create({
             username: username,
             email: email,

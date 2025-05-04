@@ -2,6 +2,7 @@ import { RootUser } from "../../Models/RootUser.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { GenerateToken } from "../../Utility/GenerateToken.js";
 
 dotenv.config();
 
@@ -18,11 +19,7 @@ export const SignIn = async (req, res) => {
         }
 
         // Creating JWT token.
-        const token = jwt.sign(
-            {root_id: rootUser.id, root_email: rootUser.email}, // Payload
-            process.env.JWT_SECRET, // Secret Key from .env file
-            { expiresIn: "5h" } // Token expires in 1h.
-        )
+        const token = GenerateToken(rootUser.id, rootUser.email)
 
         await RootUser.update(
             { lastLogin: new Date() },
