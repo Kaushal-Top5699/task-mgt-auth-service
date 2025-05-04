@@ -1,1 +1,1 @@
-*Task Management Auth Service
+Task Management Auth Service
