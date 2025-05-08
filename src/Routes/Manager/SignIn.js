@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { Manager } from "../../Models/Manager.js";
 import { GenerateToken } from "../../Utility/GenerateToken.js";
