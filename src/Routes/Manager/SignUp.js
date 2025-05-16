@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import { Manager } from "../../Models/Manager.js";
 import { ManagerApproval } from "../../Models/ManagerApproval.js";

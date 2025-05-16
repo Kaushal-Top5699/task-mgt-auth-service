@@ -1,5 +1,4 @@
 import { RootUser } from "../../Models/RootUser.js";
-import bcrypt from "bcryptjs";
 import { Op } from 'sequelize';
 import dotenv from "dotenv";
 import { HashPassword } from "../../Utility/HashPassword.js";

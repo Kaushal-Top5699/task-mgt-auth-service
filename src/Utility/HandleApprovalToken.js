@@ -1,7 +1,7 @@
-import { ManagerApproval } from "../../Models/ManagerApproval.js";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from 'uuid';
 import nodemailer from "nodemailer"
+import { where } from "sequelize";
 
 dotenv.config()
 
@@ -14,31 +14,30 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-export const SendApproveToken = async (req, res) => {
-    const { email } = req.body
+export const HandleApprovalToken = async (Model, email, headEmail = null, res, requester = 'manager') => {
     try {
-        const request = await ManagerApproval.findOne({ where: { email: email } })
+        const whereCondition = headEmail ? { email: email, managerEmail: headEmail } : { email: email }
+        const request = await Model.findOne({ where: whereCondition });
         if (!request) {
-            return res.status(404).json({ message: 'Approval request not initiated.' })
+            return res.status(404).json({ message: 'Approval request not initiated. Request not found.' })
         } else if (request.status === 'approved') {
-            return res.status(400).json({ message: 'Request is already approved, please create or login to your account.' })
+            return res.status(400).json({ message: 'Request is already approved, advice user to create account.' })
         }
 
         const newToken = uuidv4();
-
-        await ManagerApproval.update(
+        await Model.update(
             { status: 'process', token: newToken },
-            { where: { email: email } },
+            { where: whereCondition },
         )
 
         await request.reload()
-
+        
         // send token in email
         await transporter.sendMail({
             from: `"Task Management - Auth Service" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: "Manager Account Approval Token",
-            text: `Here is your approval token: ${newToken}`
+            subject: `${requester} Account Approval Token`,
+            text: `Here is your approval token: ${newToken}, use this token to create your account.`
         });
 
         return res.status(200).json({ 
@@ -46,7 +45,7 @@ export const SendApproveToken = async (req, res) => {
             token: request.token
          })
     } catch (error) {
-        console.log(`ERROR: ${error}`)
+        console.error(error)
         return res.status(500).json({ ERROR: error })
     }
 }

@@ -1,6 +1,8 @@
 import Sequelize from 'sequelize';
 
-export const sequelize = new Sequelize('task_auth_service_db', 'root', '', {
-    host: '127.0.0.1',
-    dialect: 'mysql'
+export const sequelize = new Sequelize('TaskManagementDB', 'postgres', 'imKaushal@5699', {
+    host: 'localhost',
+    dialect: 'postgres',
+    port: 5432,
+    logging: console.log,
 })
